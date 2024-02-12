@@ -1,9 +1,7 @@
-const domain = process.env.NEXT_PUBLIC_CLERK_DOMAIN;
-
 export default {
   providers: [
     {
-      domain: domain,
+      domain: "https://talented-gannet-90.clerk.accounts.dev",
       applicationID: "convex",
     },
   ],
