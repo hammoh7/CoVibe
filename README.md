@@ -2,7 +2,6 @@
 ## Development in Progress
 
 ### Getting Started
-<br />
 1. Clone the project:
    ```
    git clone https://github.com/hammoh7/CoVibe.git
