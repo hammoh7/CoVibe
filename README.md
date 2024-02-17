@@ -17,6 +17,8 @@
 
    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
    CLERK_SECRET_KEY=
+
+   LIVEBLOCKS_SECRET_KEY=
    ```
 4. Then, run the development server:
    ```
