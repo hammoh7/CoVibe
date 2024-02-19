@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Content } from "./content";
 import { Toolbar } from "./toolbar";
 import { Users } from "./users";
-import { Camera, CanvasMode, CanvasState, Color, LayerType, Point } from "@/types/canvas";
+import { Camera, CanvasMode, CanvasState, Color, Dimensions, LayerType, Point, Side } from "@/types/canvas";
 import {
   useCanRedo,
   useCanUndo,
@@ -18,6 +18,7 @@ import { connectionIdToColor, pointerEventToCanvas } from "@/lib/utils";
 import { nanoid } from "nanoid";
 import { LiveObject } from "@liveblocks/client";
 import { LayerPreview } from "./layer-preview";
+import { SelectionBox } from "./selection-box";
 
 const MAX_LAYERS = 100;
 
@@ -70,6 +71,18 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     setMyPresence({ selection: [layerId] }, { addToHistory: true });
     setCanvasState({ mode: CanvasMode.None })
   }, [lastUsedColor])
+
+  const onResizeHandlePointerDown = useCallback((
+    corner: Side,
+    initialBounds: Dimensions,
+  ) => {
+    history.pause();
+    setCanvasState({
+      mode: CanvasMode.Resizing,
+      initialBounds,
+      corner,
+    });
+  }, [history]);
 
   const onWheel = useCallback((e: React.WheelEvent) => {
     setCamera((camera) => ({
@@ -176,6 +189,9 @@ export const Canvas = ({ boardId }: CanvasProps) => {
             selectionColor= {layersIdToColorSelection[layerId]}
           />
         ))}
+        <SelectionBox 
+          onResizeHandlePointerDown={onResizeHandlePointerDown}
+        />
         <g style={{ transform: `translate(${camera.x}px, ${camera.y}px)` }}>
           <UserCursor />
         </g>
