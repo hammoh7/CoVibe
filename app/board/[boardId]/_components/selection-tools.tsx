@@ -5,10 +5,10 @@ import { useMutation, useSelf } from "@/liveblocks.config";
 import { Camera, Color } from "@/types/canvas";
 import { memo } from "react";
 import { ColorPicker } from "./color-picker";
-import { deleteLayers } from "@/hooks/delete-layer";
 import { Label } from "@/components/label";
 import { Button } from "@/components/ui/button";
 import { BringToFront, LucideTrash2, SendToBack } from "lucide-react";
+import { deleteLayers } from "@/hooks/delete-layer";
 
 interface SelectionToolsProps {
   camera: Camera;
@@ -24,7 +24,7 @@ export const SelectionTools = memo(
     ) => {
       const liveLayersIds = storage.get("layerIds");
       const indices: number[] = [];
-      const arr = liveLayersIds.toArray();
+      const arr = liveLayersIds.toImmutable();
 
       for (let i=0 ; i<arr.length ; i++) {
         if (selection.includes(arr[i])) {
@@ -44,7 +44,7 @@ export const SelectionTools = memo(
     ) => {
       const liveLayersIds = storage.get("layerIds");
       const indices: number[] = [];
-      const arr = liveLayersIds.toArray();
+      const arr = liveLayersIds.toImmutable();
 
       for (let i=0 ; i<arr.length ; i++) {
         if (selection.includes(arr[i])) {

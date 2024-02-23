@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Content } from "./content";
 import { Toolbar } from "./toolbar";
 import { Users } from "./users";
@@ -20,10 +20,12 @@ import {
   useHistory,
   useMutation,
   useOthersMapped,
+  useSelf,
   useStorage,
 } from "@/liveblocks.config";
 import { UserCursor } from "./user-cursor";
 import {
+  colorToCss,
   connectionIdToColor,
   intersectingLayersWithRectangle,
   penPointToPath,
@@ -35,6 +37,9 @@ import { LiveObject } from "@liveblocks/client";
 import { LayerPreview } from "./layer-preview";
 import { SelectionBox } from "./selection-box";
 import { SelectionTools } from "./selection-tools";
+import { Path } from "./path";
+import { disableScrollBounce } from "@/hooks/scroll-bounce";
+import { deleteLayers } from "@/hooks/delete-layer";
 
 const MAX_LAYERS = 100;
 
@@ -44,6 +49,7 @@ interface CanvasProps {
 
 export const Canvas = ({ boardId }: CanvasProps) => {
   const layerIds = useStorage((root) => root.layerIds);
+  const pencilDraft = useSelf((me) => me.presence.pencilDraft);
 
   const [canvasState, setCanvasState] = useState<CanvasState>({
     mode: CanvasMode.None,
@@ -60,6 +66,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
   const history = useHistory();
   const canUndo = useCanUndo();
   const canRedo = useCanRedo();
+  disableScrollBounce();
 
   const insertLayer = useMutation(
     (
@@ -371,6 +378,33 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     return layersIdToColorSelection;
   }, [selections]);
 
+  const deleteLayer = deleteLayers();
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      switch (e.key) {
+        case "Delete": 
+          deleteLayer();
+          break;
+        case "z": {
+          if (e.ctrlKey || e.metaKey) {
+            if (e.shiftKey) {
+              history.redo();
+            } else {
+              history.undo();
+            }
+            break;
+          }
+        }
+      }
+    }
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown)
+    }
+  }, [deleteLayer, history])
+
   return (
     <main className="h-full w-full relative bg-slate-100 touch-none">
       <Content boardId={boardId} />
@@ -413,6 +447,14 @@ export const Canvas = ({ boardId }: CanvasProps) => {
               />
             )}
           <UserCursor />
+          {pencilDraft != null && pencilDraft.length > 0 && (
+            <Path 
+              points={pencilDraft}
+              fill={colorToCss(lastUsedColor)}
+              x={0}
+              y={0}
+            />
+          )}
         </g>
       </svg>
     </main>
