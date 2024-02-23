@@ -144,5 +144,3 @@ export function penPointToPath(points: number[][], color: Color): PathLayer {
   };
 }
 
-
-// 09:55
