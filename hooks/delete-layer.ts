@@ -1,4 +1,3 @@
-import { SelectionTools } from "@/app/board/[boardId]/_components/selection-tools";
 import { useMutation, useSelf } from "@/liveblocks.config";
 
 export const deleteLayers = () => {
