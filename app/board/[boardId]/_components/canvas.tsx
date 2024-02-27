@@ -40,6 +40,7 @@ import { SelectionTools } from "./selection-tools";
 import { Path } from "./path";
 import { disableScrollBounce } from "@/hooks/scroll-bounce";
 import { deleteLayers } from "@/hooks/delete-layer";
+import ShapesSidebar from "./shapes";
 
 const MAX_LAYERS = 100;
 
@@ -62,6 +63,12 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     g: 0,
     b: 0,
   });
+
+  const [showShapesSidebar, setShowShapesSidebar] = useState(false);
+
+  const handleShapesClick = () => {
+    setShowShapesSidebar(!showShapesSidebar);
+  };
 
   const history = useHistory();
   const canUndo = useCanUndo();
@@ -417,6 +424,9 @@ export const Canvas = ({ boardId }: CanvasProps) => {
         canUndo={canUndo}
         canRedo={canRedo}
       />
+      {showShapesSidebar && (
+        <ShapesSidebar canvasState={canvasState} setCanvasState={setCanvasState} />
+      )}
       <SelectionTools camera={camera} setLastUsedColor={setLastUsedColor} />
       <svg
         className="h-[100vh] w-[100vw]"

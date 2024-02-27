@@ -4,11 +4,11 @@ import { useStorage } from "@/liveblocks.config";
 import { LayerType } from "@/types/canvas";
 import { memo } from "react";
 import { Rectangle } from "./rectangle";
-import { Circle } from "./circle";
 import { Text } from "./text";
 import { Note } from "./note";
 import { Path } from "./path";
 import { colorToCss } from "@/lib/utils";
+import { Circle } from "./circle";
 
 interface LayerPreviewProps {
   id: string;

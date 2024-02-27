@@ -1,9 +1,9 @@
+"use client";
+
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  Circle,
   LucideMousePointer2,
   Pencil,
-  RectangleHorizontal,
   Redo2,
   Shapes,
   StickyNote,
@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { ToolButton } from "./tools";
 import { CanvasMode, CanvasState, LayerType } from "@/types/canvas";
+import { useState } from "react";
+import ShapesSidebar from "./shapes";
 
 interface ToolbarProps {
   canvasState: CanvasState;
@@ -30,6 +32,13 @@ export const Toolbar = ({
   canUndo,
   canRedo,
 }: ToolbarProps) => {
+  const [showShapesSidebar, setShowShapesSidebar] = useState(false);
+
+  const handleShapesClick = () => {
+    setShowShapesSidebar(!showShapesSidebar);
+  };
+
+
   return (
     <div className="absolute top-[50%] -translate-y-[50%] left-2 flex flex-col gap-y-4">
       <div className="bg-white rounded-md p-1.5 flex gap-y-1 flex-col items-center shadow-md">
@@ -74,46 +83,33 @@ export const Toolbar = ({
           }
         />
         <ToolButton
-          label="Circle"
-          icon={Circle}
-          onClick={() =>
-            setCanvasState({
-              mode: CanvasMode.Inserting,
-              layerType: LayerType.Circle,
-            })
-          }
-          isActive={
-            canvasState.mode === CanvasMode.Inserting &&
-            canvasState.layerType === LayerType.Circle
-          }
-        />
-        <ToolButton
-          label="Rectangle"
-          icon={RectangleHorizontal}
-          onClick={() =>
-            setCanvasState({
-              mode: CanvasMode.Inserting,
-              layerType: LayerType.Rectangle,
-            })
-          }
-          isActive={
-            canvasState.mode === CanvasMode.Inserting &&
-            canvasState.layerType === LayerType.Rectangle
-          }
+          label="Shapes"
+          icon={Shapes}
+          onClick={handleShapesClick}
+          isActive={showShapesSidebar}
         />
         <ToolButton
           label="Pencil"
           icon={Pencil}
           onClick={() =>
             setCanvasState({
-              mode: CanvasMode.Pencil
+              mode: CanvasMode.Pencil,
             })
           }
-          isActive={
-            canvasState.mode === CanvasMode.Pencil
-          }
+          isActive={canvasState.mode === CanvasMode.Pencil}
         />
       </div>
+      {showShapesSidebar && (
+        <div
+          className="absolute top-[50%] -translate-y-[50%] left-20" // Adjust left property as needed
+          style={{ zIndex: 1000 }}
+        >
+          <ShapesSidebar
+            canvasState={canvasState}
+            setCanvasState={setCanvasState}
+          />
+        </div>
+      )}
       <div className="bg-white rounded-md p-1.5 flex flex-col items-center shadow-md">
         <ToolButton
           label="Undo"

@@ -7,10 +7,13 @@ interface ColorButtonProps {
 }
 
 export const ColorButton = ({ onClick, color }: ColorButtonProps) => {
+  const handleClick = () => {
+    onClick(color);
+  };
   return (
     <button
       className="w-8 h-8 items-center flex justify-center hover:opacity-75 transition"
-      onClick={() => onClick(color)}
+      onClick={handleClick}
     >
       <div
         className="h-8 w-8 rounded-md border border-slate-400"
