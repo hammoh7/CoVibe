@@ -2,6 +2,7 @@ import { cn, colorToCss } from "@/lib/utils";
 import { useMutation } from "@/liveblocks.config";
 import { TextLayer } from "@/types/canvas";
 import { Dosis } from "next/font/google";
+import { useEffect, useRef } from "react";
 import ContentEditable, { ContentEditableEvent } from "react-contenteditable";
 
 const font = Dosis({
@@ -41,6 +42,15 @@ export const Text = ({
     updatedValue(e.target.value);
   };
 
+  const contentEditableRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // Focus the contentEditable when the component mounts
+    if (contentEditableRef.current) {
+      contentEditableRef.current.focus();
+    }
+  }, []);
+
   return (
     <foreignObject
       x={x}
@@ -53,14 +63,15 @@ export const Text = ({
       }}
     >
       <ContentEditable
-        html={value || "Text"}
+        innerRef={contentEditableRef}
+        html={value || ""}
         onChange={handleContentChange}
         className={cn(
           "h-full w-full flex items-center justify-center text-center drop-shadow-md outline-none",
           font.className
         )}
         style={{
-          fontsize: calculateFontSize(width, height),
+          fontSize: calculateFontSize(width, height),
           color: fill ? colorToCss(fill) : "#000",
         }}
       />

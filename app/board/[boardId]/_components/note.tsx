@@ -2,6 +2,7 @@ import { cn, colorToCss, getContrastText } from "@/lib/utils";
 import { useMutation } from "@/liveblocks.config";
 import { NoteLayer, TextLayer } from "@/types/canvas";
 import { Dosis } from "next/font/google";
+import { useEffect, useRef } from "react";
 import ContentEditable, { ContentEditableEvent } from "react-contenteditable";
 
 const font = Dosis({
@@ -17,6 +18,7 @@ const calculateFontSize = (width: number, height: number) => {
 
   return Math.min(fontSizeBasedOnHeight, fontSizeBasedOnWidth, maxFontSize);
 };
+
 
 interface NoteProps {
   id: string;
@@ -41,6 +43,15 @@ export const Note = ({
     updatedValue(e.target.value);
   };
 
+  const contentEditableRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // Focus the contentEditable when the component mounts
+    if (contentEditableRef.current) {
+      contentEditableRef.current.focus();
+    }
+  }, []);
+
   return (
     <foreignObject
       x={x}
@@ -55,14 +66,15 @@ export const Note = ({
       className="shadow-md drop-shadow-xl "
     >
       <ContentEditable
-        html={value || "Text"}
+        innerRef={contentEditableRef}
+        html={value || ""}
         onChange={handleContentChange}
         className={cn(
           "h-full w-full flex items-center justify-center text-center outline-none",
           font.className
         )}
         style={{
-          fontsize: calculateFontSize(width, height),
+          fontSize: calculateFontSize(width, height),
           color: fill ? getContrastText(fill) : "#000",
         }}
       />
