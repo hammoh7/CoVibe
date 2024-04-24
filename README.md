@@ -10,7 +10,9 @@
    ```
    npm install
    ```
-3. Create a .env.local (No need to create if already exist). Copy below things with your appropriate data:
+3. Create a .env.local. Copy below things with your appropriate data:
+   <br />
+   I have used Convex (for database), Clerk (for Authentication) and Liveblocks (for live and interactive boards)
    ```
    CONVEX_DEPLOYMENT=
    NEXT_PUBLIC_CONVEX_URL=
